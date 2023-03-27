@@ -27,16 +27,16 @@ type Vendor struct {
 	BusinessNumber string          `json:",omitempty"`
 	// CurrencyRef
 	HasTPAR           bool            `json:",omitempty"`
-	TaxReportingBasis string          `json:",omitempty"`
-	Mobile            TelephoneNumber `json:",omitempty"`
-	PrimaryPhone      TelephoneNumber `json:",omitempty"`
-	Active            bool            `json:",omitempty"`
-	AlternatePhone    TelephoneNumber `json:",omitempty"`
-	MetaData          MetaData        `json:",omitempty"`
-	Vendor1099        bool            `json:",omitempty"`
-	BillRate          json.Number     `json:",omitempty"`
-	WebAddr           *WebSiteAddress `json:",omitempty"`
-	CompanyName       string          `json:",omitempty"`
+	TaxReportingBasis string              `json:",omitempty"`
+	Mobile            TelephoneNumber     `json:",omitempty"`
+	PrimaryPhone      TelephoneNumber     `json:",omitempty"`
+	Active            bool                `json:",omitempty"`
+	AlternatePhone TelephoneNumber `json:",omitempty"`
+	MetaData       MetaData        `json:",omitempty"`
+	Vendor1099     bool            `json:",omitempty"`
+	BillRate          json.Number         `json:",omitempty"`
+	WebAddr           *WebSiteAddress     `json:",omitempty"`
+	CompanyName       string              `json:",omitempty"`
 	// VendorPaymentBankDetail
 	TaxIdentifier       string           `json:",omitempty"`
 	AcctNum             string           `json:",omitempty"`
@@ -47,7 +47,7 @@ type Vendor struct {
 }
 
 // GetVendors gets the vendors
-func (c *Client) GetVendors(startpos int) ([]Vendor, error) {
+func (c *quickbooks.Client) GetVendors(startpos int) ([]Vendor, error) {
 
 	var r struct {
 		QueryResponse struct {
@@ -70,7 +70,7 @@ func (c *Client) GetVendors(startpos int) ([]Vendor, error) {
 }
 
 // CreateVendor creates the vendor
-func (c *Client) CreateVendor(vendor *Vendor) (*Vendor, error) {
+func (c *quickbooks.Client) CreateVendor(vendor *Vendor) (*Vendor, error) {
 	var u, err = url.Parse(string(c.Endpoint))
 	if err != nil {
 		return nil, err
@@ -111,7 +111,7 @@ func (c *Client) CreateVendor(vendor *Vendor) (*Vendor, error) {
 }
 
 // UpdateVendor updates the vendor
-func (c *Client) UpdateVendor(vendor *Vendor) (*Vendor, error) {
+func (c *quickbooks.Client) UpdateVendor(vendor *Vendor) (*Vendor, error) {
 	var u, err = url.Parse(string(c.Endpoint))
 	if err != nil {
 		return nil, err

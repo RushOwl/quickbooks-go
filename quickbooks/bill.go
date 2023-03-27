@@ -19,18 +19,18 @@ type Bill struct {
 	//LinkedTxn
 	//GlobalTaxCalculation
 	TotalAmt                json.Number `json:",omitempty"`
-	TransactionLocationType string      `json:",omitempty"`
-	DueDate                 Date        `json:",omitempty"`
-	MetaData                MetaData    `json:",omitempty"`
-	DocNumber               string
-	PrivateNote             string        `json:",omitempty"`
-	TxnTaxDetail            TxnTaxDetail  `json:",omitempty"`
-	ExchangeRate            json.Number   `json:",omitempty"`
-	DepartmentRef           ReferenceType `json:",omitempty"`
-	IncludeInAnnualTPAR     bool          `json:",omitempty"`
-	HomeBalance             json.Number   `json:",omitempty"`
-	RecurDataRef            ReferenceType `json:",omitempty"`
-	Balance                 json.Number   `json:",omitempty"`
+	TransactionLocationType string              `json:",omitempty"`
+	DueDate      Date     `json:",omitempty"`
+	MetaData     MetaData `json:",omitempty"`
+	DocNumber    string
+	PrivateNote  string       `json:",omitempty"`
+	TxnTaxDetail TxnTaxDetail `json:",omitempty"`
+	ExchangeRate json.Number  `json:",omitempty"`
+	DepartmentRef       ReferenceType `json:",omitempty"`
+	IncludeInAnnualTPAR bool          `json:",omitempty"`
+	HomeBalance         json.Number   `json:",omitempty"`
+	RecurDataRef        ReferenceType `json:",omitempty"`
+	Balance             json.Number   `json:",omitempty"`
 }
 
 func (c *Client) CreateBill(bill *Bill) (*Bill, error) {

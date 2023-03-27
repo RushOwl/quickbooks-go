@@ -24,6 +24,7 @@ package quickbooks
 
 import (
 	"encoding/json"
+	"github.com/RushOwl/quickbooks-go"
 	"net/http"
 	"net/url"
 )
@@ -57,7 +58,7 @@ func NewQuickbooksClient(clientId string, clientSecret string, realmID string, i
 		client.discoveryAPI = CallDiscoveryAPI(DiscoverySandboxEndpoint)
 	}
 	if token != nil {
-		client.Client = getHttpClient(token)
+		client.Client = quickbooks.getHttpClient(token)
 	}
 	return &client, nil
 }

@@ -26,14 +26,14 @@ type Item struct {
 	Taxable             bool        `json:",omitempty"`
 	SalesTaxIncluded    bool        `json:",omitempty"`
 	UnitPrice           json.Number `json:",omitempty"`
-	Type                string
-	IncomeAccountRef    ReferenceType
-	ExpenseAccountRef   ReferenceType
-	PurchaseDesc        string      `json:",omitempty"`
+	Type              string
+	IncomeAccountRef  ReferenceType
+	ExpenseAccountRef ReferenceType
+	PurchaseDesc      string      `json:",omitempty"`
 	PurchaseTaxIncluded bool        `json:",omitempty"`
-	PurchaseCost        json.Number `json:",omitempty"`
-	AssetAccountRef     ReferenceType
-	TrackQtyOnHand      bool `json:",omitempty"`
+	PurchaseCost      json.Number `json:",omitempty"`
+	AssetAccountRef   ReferenceType
+	TrackQtyOnHand    bool `json:",omitempty"`
 	//InvStartDate Date
 	QtyOnHand          json.Number   `json:",omitempty"`
 	SalesTaxCodeRef    ReferenceType `json:",omitempty"`
@@ -42,7 +42,7 @@ type Item struct {
 
 // FetchItems returns the list of Items in the QuickBooks account. These are
 // basically product types, and you need them to create invoices.
-func (c *Client) FetchItems() ([]Item, error) {
+func (c *quickbooks.Client) FetchItems() ([]Item, error) {
 	var r struct {
 		QueryResponse struct {
 			Item          []Item
@@ -63,7 +63,7 @@ func (c *Client) FetchItems() ([]Item, error) {
 }
 
 // FetchItem returns just one particular Item from QuickBooks, by ID.
-func (c *Client) FetchItem(id string) (*Item, error) {
+func (c *quickbooks.Client) FetchItem(id string) (*Item, error) {
 	var u, err = url.Parse(string(c.Endpoint))
 	if err != nil {
 		return nil, err

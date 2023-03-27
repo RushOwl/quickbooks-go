@@ -42,17 +42,17 @@ type Invoice struct {
 	HomeBalance           json.Number  `json:",omitempty"`
 	ApplyTaxAfterDiscount bool         `json:",omitempty"`
 	PrintStatus           string       `json:",omitempty"`
-	EmailStatus           string       `json:",omitempty"`
-	BillEmail             EmailAddress `json:",omitempty"`
-	BillEmailCC           EmailAddress `json:"BillEmailCc,omitempty"`
-	BillEmailBCC          EmailAddress `json:"BillEmailBcc,omitempty"`
+	EmailStatus  string       `json:",omitempty"`
+	BillEmail    EmailAddress `json:",omitempty"`
+	BillEmailCC  EmailAddress `json:"BillEmailCc,omitempty"`
+	BillEmailBCC EmailAddress `json:"BillEmailBcc,omitempty"`
 	//DeliveryInfo
 	Balance                      json.Number   `json:",omitempty"`
 	TxnSource                    string        `json:",omitempty"`
 	AllowOnlineCreditCardPayment bool          `json:",omitempty"`
 	AllowOnlineACHPayment        bool          `json:",omitempty"`
-	Deposit                      json.Number   `json:",omitempty"`
-	DepositToAccountRef          ReferenceType `json:",omitempty"`
+	Deposit             json.Number   `json:",omitempty"`
+	DepositToAccountRef ReferenceType `json:",omitempty"`
 }
 
 // TxnTaxDetail ...
@@ -119,7 +119,7 @@ type DiscountLineDetail struct {
 }
 
 // FetchInvoices gets the full list of Invoices in the QuickBooks account.
-func (c *Client) FetchInvoices() ([]Invoice, error) {
+func (c *quickbooks.Client) FetchInvoices() ([]Invoice, error) {
 
 	// See how many invoices there are.
 	var r struct {
@@ -148,7 +148,7 @@ func (c *Client) FetchInvoices() ([]Invoice, error) {
 }
 
 // Fetch one page of results, because we can't get them all in one query.
-func (c *Client) fetchInvoicePage(startpos int) ([]Invoice, error) {
+func (c *quickbooks.Client) fetchInvoicePage(startpos int) ([]Invoice, error) {
 
 	var r struct {
 		QueryResponse struct {
@@ -173,7 +173,7 @@ func (c *Client) fetchInvoicePage(startpos int) ([]Invoice, error) {
 
 // CreateInvoice creates the given Invoice on the QuickBooks server, returning
 // the resulting Invoice object.
-func (c *Client) CreateInvoice(inv *Invoice) (*Invoice, error) {
+func (c *quickbooks.Client) CreateInvoice(inv *Invoice) (*Invoice, error) {
 	var u, err = url.Parse(string(c.Endpoint))
 	if err != nil {
 		return nil, err
@@ -215,7 +215,7 @@ func (c *Client) CreateInvoice(inv *Invoice) (*Invoice, error) {
 
 // DeleteInvoice deletes the given Invoice by ID and sync token from the
 // QuickBooks server.
-func (c *Client) DeleteInvoice(id, syncToken string) error {
+func (c *quickbooks.Client) DeleteInvoice(id, syncToken string) error {
 	var u, err = url.Parse(string(c.Endpoint))
 	if err != nil {
 		return err
