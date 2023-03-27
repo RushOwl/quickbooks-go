@@ -1,4 +1,4 @@
-package v0
+package auth
 
 import (
 	"bytes"
@@ -19,8 +19,7 @@ import (
 	"strings"
 )
 
-func ValidateIDToken(idToken string) bool {
-
+func (c *Config) ValidateIDToken(idToken string) bool {
 	log.Println("Ending ValidateIDToken")
 	if idToken != "" {
 		parts := strings.Split(idToken, ".")
@@ -57,7 +56,7 @@ func ValidateIDToken(idToken string) bool {
 
 		//Step 1 : First check if the issuer is as mentioned in "issuer" in the discovery doc
 		issuer := payload.ISS
-		if issuer != "sadffdfsdf" {
+		if issuer != c.OpenIdConfiguration.Issuer {
 			log.Fatalln("issuer value mismtach")
 			return false
 		}
@@ -65,7 +64,7 @@ func ValidateIDToken(idToken string) bool {
 		//Step 2 : check if the aud field in idToken is same as application's clientId
 		audArray := payload.AUD
 		aud := audArray[0]
-		if aud != "config.OAuthConfig.ClientId" {
+		if aud != c.ClientId {
 			log.Fatalln("incorrect client id")
 			return false
 		}
@@ -79,7 +78,7 @@ func ValidateIDToken(idToken string) bool {
 		}
 
 		//Step 4: Verify that the ID token is properly signed by the issuer
-		jwksResponse, err := CallJWKSAPI()
+		jwksResponse, err := c.CallJWKSAPI()
 		if err != nil {
 			log.Fatalln("error calling jwks", err)
 			return false

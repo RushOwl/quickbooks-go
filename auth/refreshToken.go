@@ -1,4 +1,4 @@
-package v0
+package auth
 
 import (
 	"bytes"
@@ -12,7 +12,7 @@ import (
 /*
  * Call the refresh endpoint to generate new tokens
  */
-func RefreshToken(w http.ResponseWriter, r *http.Request) {
+func (c *Config) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Entering RefreshToken ")
 	client := &http.Client{}
@@ -32,7 +32,7 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 	//set the headers
 	request.Header.Set("accept", "application/json")
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
-	request.Header.Set("Authorization", "Basic "+basicAuth())
+	request.Header.Set("Authorization", "Basic "+c.BasicAuth())
 
 	resp, err := client.Do(request)
 	defer resp.Body.Close()

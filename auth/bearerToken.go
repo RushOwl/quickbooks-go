@@ -1,10 +1,8 @@
-package v0
+package auth
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
-	"github.com/IntuitDeveloper/OAuth2-Go/config"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -14,16 +12,16 @@ import (
 /*
  * Method to retrive access token (bearer token)
  */
-func RetrieveBearerToken(code string) (*BearerTokenResponse, error) {
+func (c *Config) RetrieveBearerToken(code string) (*BearerTokenResponse, error) {
 	log.Println("Entering RetrieveBearerToken ")
 	client := &http.Client{}
 	data := url.Values{}
 	//set parameters
 	data.Set("grant_type", "authorization_code")
 	data.Add("code", code)
-	data.Add("redirect_uri", "")
+	data.Add("redirect_uri", c.RedirectUri)
 
-	tokenEndpoint := ""
+	tokenEndpoint := c.OpenIdConfiguration.TokenEndpoint
 	request, err := http.NewRequest("POST", tokenEndpoint, bytes.NewBufferString(data.Encode()))
 	if err != nil {
 		log.Fatalln(err)
@@ -31,7 +29,7 @@ func RetrieveBearerToken(code string) (*BearerTokenResponse, error) {
 	//set headers
 	request.Header.Set("accept", "application/json")
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
-	request.Header.Set("Authorization", "Basic "+basicAuth())
+	request.Header.Set("Authorization", "Basic "+c.BasicAuth())
 
 	resp, err := client.Do(request)
 	defer resp.Body.Close()
@@ -61,9 +59,4 @@ func getBearerTokenResponse(body []byte) (*BearerTokenResponse, error) {
 		log.Fatalln("error getting BearerTokenResponse:", err)
 	}
 	return s, err
-}
-
-func basicAuth() string {
-	auth := config.OAuthConfig.ClientId + ":" + config.OAuthConfig.ClientSecret
-	return base64.StdEncoding.EncodeToString([]byte(auth))
 }

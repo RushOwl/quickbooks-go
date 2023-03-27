@@ -1,4 +1,4 @@
-package v0
+package auth
 
 import (
 	"encoding/json"
@@ -10,11 +10,10 @@ import (
 /*
  * Call JWKS endpoint and retrieve the key values
  */
-func CallJWKSAPI() (*JWKSResponse, error) {
+func (c *Config) CallJWKSAPI() (*JWKSResponse, error) {
 	log.Println("Entering CallJWKSAPI ")
 	client := &http.Client{}
-	jwksEndpoint := ""
-	request, err := http.NewRequest("GET", jwksEndpoint, nil)
+	request, err := http.NewRequest("GET", c.OpenIdConfiguration.JwksUri, nil)
 	if err != nil {
 		log.Fatalln(err)
 	}

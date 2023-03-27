@@ -1,4 +1,4 @@
-package v0
+package auth
 
 import (
 	"crypto/ecdsa"
@@ -14,6 +14,12 @@ import (
 	"strconv"
 	"time"
 )
+
+/*
+// Generate ES512 key
+openopenssl ecparam -genkey -name secp521r1 -noout -out ecdsa-p521-private.pem
+openssl ec -in ecdsa-p521-private.pem -pubout -out ecdsa-p521-public.pem
+*/
 
 func GenerateEncodedState(req *http.Request, privateKeyStr string) (csrfToken, encryptedCsrfToken string, err error) {
 	csrfToken = csrf.Token(req)

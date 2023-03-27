@@ -1,9 +1,9 @@
 package auth
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
-	v0 "github.com/RushOwl/quickbooks-go/auth/v0"
 	"github.com/RushOwl/quickbooks-go/util/envvar"
 	"github.com/golang-jwt/jwt/v5"
 	log "github.com/sirupsen/logrus"
@@ -27,6 +27,7 @@ type Config struct {
 }
 
 type OpenIdConfiguration struct {
+	Issuer                string `json:"issuer"`
 	AuthorizationEndpoint string `json:"authorization_endpoint"`
 	TokenEndpoint         string `json:"token_endpoint"`
 	UserinfoEndpoint      string `json:"userinfo_endpoint"`
@@ -121,7 +122,7 @@ func (c *Config) Connect(req *http.Request) (authUri string, encryptedCsrfToken 
 	if !isExist {
 		return
 	}
-	csrfToken, encryptedCsrfToken, err := v0.GenerateEncodedState(req, privateKeyStr)
+	csrfToken, encryptedCsrfToken, err := GenerateEncodedState(req, privateKeyStr)
 	if err != nil {
 		log.Error(err)
 		return
@@ -158,7 +159,7 @@ func (c *Config) VerifyOauth2Callback(req *http.Request) (realmId string, access
 		log.Error(err)
 		return
 	}
-	isValid, claims, err := v0.ValidateToken(encryptedCsrfPublicKey, encryptedCsrfCookie.Value)
+	isValid, claims, err := ValidateToken(encryptedCsrfPublicKey, encryptedCsrfCookie.Value)
 	if err != nil {
 		log.Error(err)
 		return
@@ -173,9 +174,9 @@ func (c *Config) VerifyOauth2Callback(req *http.Request) (realmId string, access
 		return
 	}
 
-	bearerTokenResponse, err := v0.RetrieveBearerToken(code)
+	bearerTokenResponse, err := c.RetrieveBearerToken(code)
 	idToken := bearerTokenResponse.IdToken
-	if !v0.ValidateIDToken(idToken) {
+	if !c.ValidateIDToken(idToken) {
 		log.Error("invalid idToken")
 		return
 	}
@@ -193,10 +194,15 @@ func (c *Config) VerifyOauth2Callback(req *http.Request) (realmId string, access
 		return
 	}
 
-	intuitJWToken, err = v0.GenerateToken(jwt.SigningMethodES512, privateKeyStr, tokenData)
+	intuitJWToken, err = GenerateToken(jwt.SigningMethodES512, privateKeyStr, tokenData)
 	if err != nil {
 		log.Error(err)
 		return
 	}
 	return
+}
+
+func (c *Config) BasicAuth() string {
+	auth := c.ClientId + ":" + c.ClientSecret
+	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
